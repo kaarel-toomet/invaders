@@ -1,10 +1,6 @@
 import pygame as pg
 import random as r
 pg.init()
-pg.mixer.init()
-pop = pg.mixer.Sound("pop.wav")
-blip = pg.mixer.Sound("blip.wav")
-blap = pg.mixer.Sound("blap.wav")
 pic = pg.image.load("kausyarcher.png")
 arw = pg.image.load("arrow.png")
 invader1 = pg.image.load("invader1.png")
