@@ -27,9 +27,9 @@ pfont = pg.font.SysFont("Times", 50)
 pause = False
 gameover = False
 gf = False
-player = pg.sprite.Group()
 arrows = pg.sprite.Group()
 ufos1 = pg.sprite.Group()
+rays = pg.sprite.Group()
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
@@ -63,7 +63,7 @@ class Proj(pg.sprite.Sprite):
         self.rect.y = int(self.y)
         self.vel = vel
     def update(self):
-        if self.y + self.vel <= screenh-96 and self.rect.y + self.vel >= 0:
+        if self.y + self.vel <= screenh and self.rect.y + self.vel >= 0:
             self.y += self.vel
             self.rect.y = int(self.y)
 class UFO(pg.sprite.Sprite):
@@ -89,7 +89,7 @@ class UFO(pg.sprite.Sprite):
         self.tick += 1
         if self.tick >= self.maxtick:
             self.tick = 0
-            #arrows.add(Proj(kausy.getx()+28, screenh-96,-10,arw))
+            rays.add(Proj(self.x+8,self.y-20,15,ray))
         if self.x + self.vel <= screenw-96 and self.x + self.vel >= 0:
             self.x += self.vel
             self.rect.x = int(self.x)
@@ -102,9 +102,9 @@ def reset():
     arrows.empty()
     ufos1.empty
     kausy = Player(screenw/2,screenh-96)
-    player.add(kausy)
+    player = pg.sprite.GroupSingle(kausy)
 kausy = Player(screenw/2,screenh-96)
-player.add(kausy)
+player = pg.sprite.GroupSingle(kausy)
 while do:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -146,7 +146,6 @@ while do:
         screen.blit(text,text_rect)
         pg.display.update()
     if lifes == 0:
-        blap.play()
         uded = "GAME OVER"
         dtext = dfont.render(uded, True, (255,0,0))
         dtext_rect = dtext.get_rect()
@@ -169,6 +168,9 @@ while do:
     for s in col1.keys():
         if len(col1[s]) > 0:
             points += 1
+    rcol = pg.sprite.spritecollide(kausy, rays,True)
+    if len(rcol) > 0:
+        lifes -= 1
     screen.fill((127,127,127))
     score = ("Lifes: " + str(lifes) + " Score: " + str(points))
     text = font.render(score, True, (255,255,255))
@@ -182,6 +184,8 @@ while do:
     arrows.draw(screen)
     ufos1.update(col1)
     ufos1.draw(screen)
+    rays.update()
+    rays.draw(screen)
     pg.display.update()
     u1tick += 1
     if u1tick >= u1max: #self, x, y, vel, img, shootdelay, bpic, bspd, hp, val
