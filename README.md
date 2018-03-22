@@ -9,3 +9,7 @@
     * hold down right shift to move faster
 * up to shoot
 
+##requirements:
+
+tested with python 3.5.2, pygame 1.9.3
+
