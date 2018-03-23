@@ -191,7 +191,6 @@ while do:
     ufos1.draw(screen)
     rays.update()
     rays.draw(screen)
-    uselessvariable -= 1
     uselessfont = pg.font.SysFont("Times", uselessvariable)
     uselesstext = uselessfont.render(uselesswords, True, (0,0,255))
     uselesstext_rect = uselesstext.get_rect()
@@ -204,6 +203,8 @@ while do:
         u1tick = 0
         ufos1.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 4, ufo1,
                       60, ray, 16, 1, 1))
+    if uselessvariable > 0:
+        uselessvariable -= 1
     if not gf:
         timer.tick(60)
 
