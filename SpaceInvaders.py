@@ -5,7 +5,6 @@ pic = pg.image.load("kausyarcher.png")
 arw = pg.image.load("arrow.png")
 ufo1 = pg.image.load("invader1.png")
 ray = pg.image.load("ray.png")
-pg.font
 screen = pg.display.set_mode((0,0), pg.RESIZABLE)
 screenw = screen.get_width()
 screenh = screen.get_height()
@@ -20,7 +19,7 @@ right = True
 mleft = False
 mright = False
 timer = pg.time.Clock()
-lifes = 5
+lifes = 10
 font = pg.font.SysFont("Times", 24)
 dfont = pg.font.SysFont("Times", 32)
 pfont = pg.font.SysFont("Times", 50)
@@ -66,6 +65,8 @@ class Proj(pg.sprite.Sprite):
         if self.y + self.vel <= screenh and self.rect.y + self.vel >= 0:
             self.y += self.vel
             self.rect.y = int(self.y)
+uselessvariable = 0
+uselessfont = pg.font.SysFont("Times", uselessvariable)
 class UFO(pg.sprite.Sprite):
     def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, hp, val):
         pg.sprite.Sprite.__init__(self)
@@ -96,8 +97,8 @@ class UFO(pg.sprite.Sprite):
         else:
             self.vel = -self.vel
 def reset():
-    global lifes, player, arrows, ufos1
-    lifes = 5
+    global lifes, player, arrows, ufos1, kausy
+    lifes = 10
     player.empty()
     arrows.empty()
     ufos1.empty
@@ -118,16 +119,18 @@ while do:
                 pause = True
             elif event.key == pg.K_r:
                 reset()
-            elif event.key == pg.K_RSHIFT:
-                gf = True
             elif event.key == pg.K_UP:
+                gf = True
+            elif event.key == pg.K_SPACE:
                 arrows.add(Proj(kausy.getx()+28, screenh-96,-10,arw))
+            elif event.key == pg.K_F7:
+                uselessvariable += 30
         elif event.type == pg.KEYUP:
             if event.key == pg.K_LEFT:
                 mleft = False
             elif event.key == pg.K_RIGHT:
                 mright = False
-            elif event.key == pg.K_RSHIFT:
+            elif event.key == pg.K_UP:
                 gf = False
     while pause:
         for event in pg.event.get():
@@ -164,6 +167,7 @@ while do:
                 if event.key == pg.K_r:
                     gameover = False
                     reset()
+    
     col1 = pg.sprite.groupcollide(arrows, ufos1, True, True)
     for s in col1.keys():
         if len(col1[s]) > 0:
@@ -171,8 +175,9 @@ while do:
     rcol = pg.sprite.spritecollide(kausy, rays,True)
     if len(rcol) > 0:
         lifes -= 1
+    uselesswords = "i like ducks"
     screen.fill((127,127,127))
-    score = ("Lifes: " + str(lifes) + " Score: " + str(points))
+    score = ("Health: " + str(lifes) + " Score: " + str(points))
     text = font.render(score, True, (255,255,255))
     text_rect = text.get_rect()
     text_rect.centerx = screen.get_rect().centerx
@@ -186,9 +191,16 @@ while do:
     ufos1.draw(screen)
     rays.update()
     rays.draw(screen)
+    uselessvariable -= 1
+    uselessfont = pg.font.SysFont("Times", uselessvariable)
+    uselesstext = uselessfont.render(uselesswords, True, (0,0,255))
+    uselesstext_rect = uselesstext.get_rect()
+    uselesstext_rect.centerx = screen.get_rect().centerx
+    uselesstext_rect.y = 30
+    screen.blit(uselesstext,uselesstext_rect)
     pg.display.update()
     u1tick += 1
-    if u1tick >= u1max: #self, x, y, vel, img, shootdelay, bpic, bspd, hp, val
+    if u1tick >= u1max:
         u1tick = 0
         ufos1.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 4, ufo1,
                       60, ray, 16, 1, 1))

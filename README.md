@@ -6,10 +6,14 @@
 ## Controls:
 
 * left/right arrows to move
-    * hold down right shift to move faster
-* up to shoot
+    * hold down up key to move faster, but other stuff will too
+* spacebar to shoot
 
-##requirements:
+* p to pause
+
+* r to reset
+
+## Requirements:
 
 tested with python 3.5.2, pygame 1.9.3
 
