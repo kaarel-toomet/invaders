@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import pygame as pg
 import random as r
 pg.init()
