@@ -7,8 +7,7 @@ arw = pg.image.load("arrow.png")
 ufo1 = pg.image.load("invader1.png")
 ray = pg.image.load("ray.png")
 screen = pg.display.set_mode((0,0), pg.RESIZABLE)
-screenw = screen.get_width()
-screenh = screen.get_height()
+screenw, screenh = pg.display.get_surface().get_size()
 pg.display.set_caption("Space Invaders")
 points = 0
 u1tick = 0
@@ -63,7 +62,7 @@ class Proj(pg.sprite.Sprite):
         self.rect.y = int(self.y)
         self.vel = vel
     def update(self):
-        if self.y + self.vel <= screenh and self.rect.y + self.vel >= 0:
+        if self.y + self.vel <= screenh and self.rect.y + self.vel >= -64:
             self.y += self.vel
             self.rect.y = int(self.y)
 uselessvariable = 0
