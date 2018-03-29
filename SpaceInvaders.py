@@ -80,17 +80,16 @@ class UFO(pg.sprite.Sprite):
         self.bullet = bpic
         self.bulletvel = bspd
         self.maxtick = shootdelay
-        self.tick = 0
+        self.tick = r.randint(0,self.maxtick)
         self.health = hp
         self.value = val
         self.wek = False
-        self.tick = 0
     def update(self, col):
         global points
         self.tick += 1
         if self.tick >= self.maxtick:
             self.tick = 0
-            rays.add(Proj(self.x+8,self.y-20,15,ray))
+            rays.add(Proj(self.x+8,self.y+4,16,ray))
         if self.x + self.vel <= screenw-96 and self.x + self.vel >= 0:
             self.x += self.vel
             self.rect.x = int(self.x)
@@ -187,10 +186,10 @@ while do:
     player.draw(screen)
     arrows.update()
     arrows.draw(screen)
-    ufos1.update(col1)
-    ufos1.draw(screen)
     rays.update()
     rays.draw(screen)
+    ufos1.update(col1)
+    ufos1.draw(screen)
     uselessfont = pg.font.SysFont("Times", uselessvariable)
     uselesstext = uselessfont.render(uselesswords, True, (0,0,255))
     uselesstext_rect = uselesstext.get_rect()
