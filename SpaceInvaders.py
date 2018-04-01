@@ -205,7 +205,7 @@ while do:
     for s in col4.keys():
         if len(col4[s]) > 0:
             points += 4
-            ammo += 1
+            ammo += 100
     rcol = pg.sprite.spritecollide(kausy, rays,True)
     if len(rcol) > 0:
         health -= (1000/res)
@@ -260,9 +260,9 @@ while do:
     u4tick += 1
     if u4tick >= u4max:
         u4tick = 0
-        ufos4.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo4,
+        ufos4.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 2, ufo4,
                       20, ray, 16))
-        u3max = r.randint(0,1800)
+        u4max = r.randint(0,2400)
     atick += 1
     if atick >= amax:
         atick = 0
