@@ -17,7 +17,7 @@ u1max = 300
 u2tick = 0
 u2max = 600
 u3tick = 0
-u3max = 1200
+u3max = 900
 do = True
 spd = 6
 left = True
@@ -32,12 +32,15 @@ pfont = pg.font.SysFont("Times", 50)
 pause = False
 gameover = False
 gf = False
-res = 0
+res = 10
 arrows = pg.sprite.Group()
 ufos1 = pg.sprite.Group()
 ufos2 = pg.sprite.Group()
 ufos3 = pg.sprite.Group()
 rays = pg.sprite.Group()
+atick = 0
+amax = 60
+ammo = 0
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
@@ -130,7 +133,9 @@ while do:
             elif event.key == pg.K_UP:
                 gf = True
             elif event.key == pg.K_SPACE:
-                arrows.add(Proj(kausy.getx()+28, screenh-96,-10,arw))
+                if ammo > 0:
+                    ammo -= 1
+                    arrows.add(Proj(kausy.getx()+28, screenh-96,-10,arw))
             elif event.key == pg.K_F7:
                 uselessvariable += 30
         elif event.type == pg.KEYUP:
@@ -184,19 +189,19 @@ while do:
     for s in col2.keys():
         if len(col2[s]) > 0:
             points += 2
-            health += 10
+            health += 100
     col3 = pg.sprite.groupcollide(arrows, ufos3, True, True)
     for s in col3.keys():
         if len(col3[s]) > 0:
             points += 3
-            res += 10
+            res += 1
     rcol = pg.sprite.spritecollide(kausy, rays,True)
     if len(rcol) > 0:
-        health -= (100-res)
+        health -= (100/(res/10))
     uselesswords = "i like ducks"
     screen.fill((127,127,127))
     score = ("Health: " + str(health) + " Score: " + str(points) +
-             " Resistance: " + str(res))
+             " Resistance: " + str(res) + " Arrows: " + str(ammo))
     text = font.render(score, True, (255,255,255))
     text_rect = text.get_rect()
     text_rect.centerx = screen.get_rect().centerx
@@ -238,7 +243,11 @@ while do:
         u3tick = 0
         ufos3.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo3,
                       20, ray, 16))
-        u2max = r.randint(0,2400)
+        u2max = r.randint(0,1800)
+    atick += 1
+    if atick >= amax:
+        atick = 0
+        ammo += 1
     if uselessvariable > 0:
         uselessvariable -= 1
     if not gf:
