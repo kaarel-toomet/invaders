@@ -7,6 +7,7 @@ arw = pg.image.load("arrow.png")
 ufo1 = pg.image.load("invader1.png")
 ufo2 = pg.image.load("invader2.png")
 ufo3 = pg.image.load("invader3.png")
+ufo4 = pg.image.load("invader4.png")
 ray = pg.image.load("ray.png")
 screen = pg.display.set_mode((0,0), pg.RESIZABLE)
 screenw, screenh = pg.display.get_surface().get_size()
@@ -18,6 +19,8 @@ u2tick = 0
 u2max = 600
 u3tick = 0
 u3max = 900
+u4tick = 0
+u4max = 1200
 do = True
 spd = 6
 left = True
@@ -37,6 +40,7 @@ arrows = pg.sprite.Group()
 ufos1 = pg.sprite.Group()
 ufos2 = pg.sprite.Group()
 ufos3 = pg.sprite.Group()
+ufos4 = pg.sprite.Group()
 rays = pg.sprite.Group()
 atick = 0
 amax = 60
@@ -105,13 +109,15 @@ class UFO(pg.sprite.Sprite):
         else:
             self.vel = -self.vel
 def reset():
-    global health, player, arrows, ufos1, kausy, ufos2, ufos3, res
+    global health, player, arrows, ufos1, kausy, ufos2, ufos3, res, ammo
     health = 1000
     player.empty()
     arrows.empty()
     ufos1.empty
     ufos2.empty
     ufos3.empty
+    ufos4.empty
+    ammo = 0
     kausy = Player(screenw/2,screenh-96)
     player = pg.sprite.GroupSingle(kausy)
     res = 0
@@ -195,9 +201,14 @@ while do:
         if len(col3[s]) > 0:
             points += 3
             res += 1
+    col4 = pg.sprite.groupcollide(arrows, ufos4, True, True)
+    for s in col4.keys():
+        if len(col4[s]) > 0:
+            points += 4
+            ammo += 1
     rcol = pg.sprite.spritecollide(kausy, rays,True)
     if len(rcol) > 0:
-        health -= (100/(res/10))
+        health -= (1000/res)
     uselesswords = "i like ducks"
     screen.fill((127,127,127))
     score = ("Health: " + str(health) + " Score: " + str(points) +
@@ -219,6 +230,8 @@ while do:
     ufos2.draw(screen)
     ufos3.update()
     ufos3.draw(screen)
+    ufos4.update()
+    ufos4.draw(screen)
     uselessfont = pg.font.SysFont("Times", uselessvariable)
     uselesstext = uselessfont.render(uselesswords, True, (0,0,255))
     uselesstext_rect = uselesstext.get_rect()
@@ -243,7 +256,13 @@ while do:
         u3tick = 0
         ufos3.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo3,
                       20, ray, 16))
-        u2max = r.randint(0,1800)
+        u3max = r.randint(0,1800)
+    u4tick += 1
+    if u4tick >= u4max:
+        u4tick = 0
+        ufos4.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo4,
+                      20, ray, 16))
+        u3max = r.randint(0,1800)
     atick += 1
     if atick >= amax:
         atick = 0
