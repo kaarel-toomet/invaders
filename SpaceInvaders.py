@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import pygame as pg
 import random as r
+import sys
+
 pg.init()
 pic = pg.image.load("kausyarcher.png")
 arw = pg.image.load("arrow.png")
@@ -9,9 +11,20 @@ ufo2 = pg.image.load("invader2.png")
 ufo3 = pg.image.load("invader3.png")
 ufo4 = pg.image.load("invader4.png")
 ray = pg.image.load("ray.png")
+
+## figure out the screen size
+## The standard get_size() gives wrong results on multi-monitor setup
+## use xrandr instead (only on linux)
+if sys.platform == 'linux':
+    s = os.popen("xrandr | grep ' connected' | wc -l").readlines()
+    s = int(s[0])
+    # number of connected screens
+    if s > 1:
+        # more than one screen
 screen = pg.display.set_mode((0,0), pg.RESIZABLE)
 screenw, screenh = pg.display.get_surface().get_size()
 pg.display.set_caption("Space Invaders")
+
 points = 0
 u1tick = 0
 u1max = 300
