@@ -2,6 +2,7 @@
 import pygame as pg
 import random as r
 import sys
+import subprocess
 
 pg.init()
 pic = pg.image.load("kausyarcher.png")
@@ -16,13 +17,20 @@ ray = pg.image.load("ray.png")
 ## The standard get_size() gives wrong results on multi-monitor setup
 ## use xrandr instead (only on linux)
 if sys.platform == 'linux':
-    s = os.popen("xrandr | grep ' connected' | wc -l").readlines()
-    s = int(s[0])
-    # number of connected screens
-    if s > 1:
-        # more than one screen
-screen = pg.display.set_mode((0,0), pg.RESIZABLE)
-screenw, screenh = pg.display.get_surface().get_size()
+    print('linux')
+    res = subprocess.run("./activescreen", stdout=subprocess.PIPE)
+    print(res)
+    if(res.returncode == 0):
+        # success
+        w, h = res.stdout
+        screenw = int(w)
+        screenh = int(h)
+        print(w, h)
+        screen = pg.display.set_mode((screenw, screenh), pg.RESIZABLE)
+    else:
+        screen = pg.display.set_mode((0,0), pg.RESIZABLE)
+        screenw, screenh = pg.display.get_surface().get_size()
+        
 pg.display.set_caption("Space Invaders")
 
 points = 0
