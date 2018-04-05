@@ -18,7 +18,9 @@ do
     -a "${pos[0]}" -lt "$(($xoff+$width))" \
     -a "${pos[1]}" -lt "$(($yoff+$height))" ]
   then
-    monitor=$name   
+      monitor=$name
+      screenw=$width
+      screenh=$height
   fi
 done < <(xrandr | grep -w connected |
   sed -r "s/^([^ ]*).*\b([-0-9]+)x([-0-9]+)$OFFSET_RE.*$/\1 \2 \3 \4 \5/" |
@@ -27,9 +29,11 @@ done < <(xrandr | grep -w connected |
 # If we found a monitor, echo it out, otherwise print an error.
 if [ ! -z "$monitor" ]
 then
-  echo $monitor
-  exit 0
+    # found monitor
+    echo $screenw
+    echo $screenh
+    exit 0
 else
-  echo "Couldn't find any monitor for the current window." >&2
-  exit 1
+    # could not find monitor
+    exit 1
 fi
