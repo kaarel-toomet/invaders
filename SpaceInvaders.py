@@ -17,15 +17,13 @@ ray = pg.image.load("ray.png")
 ## The standard get_size() gives wrong results on multi-monitor setup
 ## use xrandr instead (only on linux)
 if sys.platform == 'linux':
-    print('linux')
     res = subprocess.run("./activescreen", stdout=subprocess.PIPE)
     print(res)
     if(res.returncode == 0):
         # success
-        w, h = res.stdout
-        screenw = int(w)
-        screenh = int(h)
-        print(w, h)
+        wh = res.stdout.split(b' ')
+        screenw = int(wh[0])
+        screenh = int(wh[1])
         screen = pg.display.set_mode((screenw, screenh), pg.RESIZABLE)
     else:
         screen = pg.display.set_mode((0,0), pg.RESIZABLE)

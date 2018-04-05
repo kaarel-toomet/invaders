@@ -30,8 +30,7 @@ done < <(xrandr | grep -w connected |
 if [ ! -z "$monitor" ]
 then
     # found monitor
-    echo $monitor
-    echo $screenw x $screenh
+    echo $screenw $screenh
     exit 0
 else
     # could not find monitor
