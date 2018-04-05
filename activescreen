@@ -3,11 +3,11 @@
 ## based on Adam Bowen's solution at:
 ## https://superuser.com/questions/603528/how-to-get-the-current-monitor-resolution-or-monitor-name-lvds-vga1-etc
 ##
-OFFSET_RE="\+([-0-9]+)\+([-0-9]+)"
+OFFSET_RE="[+-]([-0-9]+)[+-]([-0-9]+)"
+# find offset in window data in form 143x133-0+0
 
-# Get the window position
-pos=($(xwininfo -id $(xdotool getactivewindow) | 
-  sed -nr "s/^.*geometry .*$OFFSET_RE.*$/\1 \2/p"))
+# Get mouse position
+pos=($(xdotool getmouselocation | sed -r "s/^x:([[:digit:]]+) y:([[:digit:]]+).*/\1 \2/p"))
 
 # Loop through each screen and compare the offset with the window
 # coordinates.
@@ -30,8 +30,8 @@ done < <(xrandr | grep -w connected |
 if [ ! -z "$monitor" ]
 then
     # found monitor
-    echo $screenw
-    echo $screenh
+    echo $monitor
+    echo $screenw x $screenh
     exit 0
 else
     # could not find monitor
