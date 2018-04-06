@@ -16,19 +16,20 @@ ray = pg.image.load("ray.png")
 ## figure out the screen size
 ## The standard get_size() gives wrong results on multi-monitor setup
 ## use xrandr instead (only on linux)
+xdotool = False
+# did we get the data through xdotool?
 if sys.platform == 'linux':
-    res = subprocess.run("./activescreen", stdout=subprocess.PIPE)
-    print(res)
+    res = subprocess.run("./activescreen", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if(res.returncode == 0):
         # success
         wh = res.stdout.split(b' ')
         screenw = int(wh[0])
         screenh = int(wh[1])
         screen = pg.display.set_mode((screenw, screenh), pg.RESIZABLE)
-    else:
-        screen = pg.display.set_mode((0,0), pg.RESIZABLE)
-        screenw, screenh = pg.display.get_surface().get_size()
-        
+        xdotool = True
+if not xdotool:
+    screen = pg.display.set_mode((0,0), pg.RESIZABLE)
+    screenw, screenh = pg.display.get_surface().get_size()
 pg.display.set_caption("Space Invaders")
 
 points = 0
