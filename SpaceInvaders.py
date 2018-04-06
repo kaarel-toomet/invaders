@@ -65,6 +65,7 @@ rays = pg.sprite.Group()
 atick = 0
 amax = 60
 ammo = 0
+hexp = 0
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
@@ -104,7 +105,7 @@ class Proj(pg.sprite.Sprite):
 uselessvariable = 0
 uselessfont = pg.font.SysFont("Times", uselessvariable)
 class UFO(pg.sprite.Sprite):
-    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd):
+    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw):
         pg.sprite.Sprite.__init__(self)
         self.image = img
         self.rect = self.image.get_rect()
@@ -117,12 +118,13 @@ class UFO(pg.sprite.Sprite):
         self.bulletvel = bspd
         self.maxtick = shootdelay
         self.tick = r.randint(0,self.maxtick)
+        self.piw = piw
     def update(self):
         global points
         self.tick += 1
         if self.tick >= self.maxtick:
             self.tick = 0
-            rays.add(Proj(self.x+8,self.y+4,16,ray))
+            rays.add(Proj(self.x+((self.piw/2)-16),self.y+4,16,ray))
         if self.x + self.vel <= screenw-96 and self.x + self.vel >= 0:
             self.x += self.vel
             self.rect.x = int(self.x)
@@ -133,14 +135,14 @@ def reset():
     health = 1000
     player.empty()
     arrows.empty()
-    ufos1.empty
-    ufos2.empty
-    ufos3.empty
-    ufos4.empty
+    ufos1.empty()
+    ufos2.empty()
+    ufos3.empty()
+    ufos4.empty()
     ammo = 0
     kausy = Player(screenw/2,screenh-96)
     player = pg.sprite.GroupSingle(kausy)
-    res = 0
+    res = 10
 kausy = Player(screenw/2,screenh-96)
 player = pg.sprite.GroupSingle(kausy)
 while do:
@@ -215,7 +217,7 @@ while do:
     for s in col2.keys():
         if len(col2[s]) > 0:
             points += 2
-            health += 100
+            health += 100+hexp
     col3 = pg.sprite.groupcollide(arrows, ufos3, True, True)
     for s in col3.keys():
         if len(col3[s]) > 0:
@@ -225,14 +227,16 @@ while do:
     for s in col4.keys():
         if len(col4[s]) > 0:
             points += 4
-            ammo += 100
+            ammo += 50
+            hexp += 10
     rcol = pg.sprite.spritecollide(kausy, rays,True)
     if len(rcol) > 0:
         health -= (1000/res)
     uselesswords = "i like ducks"
     screen.fill((127,127,127))
     score = ("Health: " + str(health) + " Score: " + str(points) +
-             " Resistance: " + str(res) + " Arrows: " + str(ammo))
+             " Resistance: " + str(res) + " Arrows: " + str(ammo)+
+             " Extra Health Gain: " + str(hexp))
     text = font.render(score, True, (255,255,255))
     text_rect = text.get_rect()
     text_rect.centerx = screen.get_rect().centerx
@@ -263,25 +267,25 @@ while do:
     if u1tick >= u1max:
         u1tick = 0
         ufos1.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo1,
-                      60, ray, 16))
+                      60, ray, 16, 64))
         u1max = r.randint(0,600)
     u2tick += 1
     if u2tick >= u2max:
         u2tick = 0
         ufos2.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 2, ufo2,
-                      30, ray, 16))
+                      30, ray, 16, 48))
         u2max = r.randint(0,1200)
     u3tick += 1
     if u3tick >= u3max:
         u3tick = 0
         ufos3.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo3,
-                      20, ray, 16))
+                      20, ray, 16, 64))
         u3max = r.randint(0,1800)
     u4tick += 1
     if u4tick >= u4max:
         u4tick = 0
         ufos4.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 2, ufo4,
-                      20, ray, 16))
+                      10, ray, 16, 128))
         u4max = r.randint(0,2400)
     atick += 1
     if atick >= amax:
