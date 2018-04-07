@@ -213,7 +213,6 @@ while do:
                 if event.key == pg.K_r:
                     gameover = False
                     reset()
-
     col1 = pg.sprite.groupcollide(arrows, ufos1, True, True)
     for s in col1.keys():
         if len(col1[s]) > 0:
@@ -240,7 +239,7 @@ while do:
         health -= (1000/res)
     uselesswords = "i like ducks"
     screen.fill((127,127,127))
-    score = ("Health: " + str(health) + " Score: " + str(points) +
+    score = ("Health: " + str(round(health)) + " Score: " + str(points) +
              " Resistance: " + str(res) + " Arrows: " + str(ammo)+
              " Extra Health Gain: " + str(hexp))
     text = font.render(score, True, (255,255,255))
