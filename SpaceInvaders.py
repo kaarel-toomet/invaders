@@ -86,6 +86,7 @@ class Player(pg.sprite.Sprite):
             self.rect.x -= spd
         if mright and right:
             self.rect.x += spd
+        self.rect.y = screenh-96
     def getx(self):
         return self.rect.x
 class Proj(pg.sprite.Sprite):
@@ -99,7 +100,7 @@ class Proj(pg.sprite.Sprite):
         self.rect.y = int(self.y)
         self.vel = vel
     def update(self):
-        if self.y + self.vel <= screenh and self.rect.y + self.vel >= -64:
+        if self.y + self.vel <= screenh+64 and self.rect.y + self.vel >= -64:
             self.y += self.vel
             self.rect.y = int(self.y)
 uselessvariable = 0
@@ -174,6 +175,9 @@ while do:
                 mright = False
             elif event.key == pg.K_UP:
                 gf = False
+        elif event.type == pg.VIDEORESIZE:
+            screenw = event.w
+            screenh = event.h
     while pause:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -209,7 +213,7 @@ while do:
                 if event.key == pg.K_r:
                     gameover = False
                     reset()
-    
+
     col1 = pg.sprite.groupcollide(arrows, ufos1, True, True)
     for s in col1.keys():
         if len(col1[s]) > 0:
@@ -241,7 +245,7 @@ while do:
              " Extra Health Gain: " + str(hexp))
     text = font.render(score, True, (255,255,255))
     text_rect = text.get_rect()
-    text_rect.centerx = screen.get_rect().centerx
+    text_rect.centerx = screenw/2
     text_rect.y = 10
     screen.blit(text,text_rect)
     player.update(mleft, mright)
@@ -261,7 +265,7 @@ while do:
     uselessfont = pg.font.SysFont("Times", uselessvariable)
     uselesstext = uselessfont.render(uselesswords, True, (0,0,255))
     uselesstext_rect = uselesstext.get_rect()
-    uselesstext_rect.centerx = screen.get_rect().centerx
+    uselesstext_rect.centerx = screenw/2
     uselesstext_rect.y = 30
     screen.blit(uselesstext,uselesstext_rect)
     pg.display.update()
