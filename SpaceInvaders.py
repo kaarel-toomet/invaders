@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 import pygame as pg
 import random as r
+import sys
+import subprocess
+
 pg.init()
 pic = pg.image.load("kausyarcher.png")
 arw = pg.image.load("arrow.png")
@@ -9,9 +12,26 @@ ufo2 = pg.image.load("invader2.png")
 ufo3 = pg.image.load("invader3.png")
 ufo4 = pg.image.load("invader4.png")
 ray = pg.image.load("ray.png")
-screen = pg.display.set_mode((0,0), pg.RESIZABLE)
-screenw, screenh = pg.display.get_surface().get_size()
+
+## figure out the screen size
+## The standard get_size() gives wrong results on multi-monitor setup
+## use xrandr instead (only on linux)
+xdotool = False
+# did we get the data through xdotool?
+if sys.platform == 'linux':
+    res = subprocess.run("./activescreen", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if(res.returncode == 0):
+        # success
+        wh = res.stdout.split(b' ')
+        screenw = int(wh[0])
+        screenh = int(wh[1])
+        screen = pg.display.set_mode((screenw, screenh), pg.RESIZABLE)
+        xdotool = True
+if not xdotool:
+    screen = pg.display.set_mode((0,0), pg.RESIZABLE)
+    screenw, screenh = pg.display.get_surface().get_size()
 pg.display.set_caption("Space Invaders")
+
 points = 0
 u1tick = 0
 u1max = 300
