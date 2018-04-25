@@ -107,6 +107,7 @@ uselessvariable = 0
 uselessfont = pg.font.SysFont("Times", uselessvariable)
 class UFO(pg.sprite.Sprite):
     def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw):
+        self.direction = r.randint(0,1)
         pg.sprite.Sprite.__init__(self)
         self.image = img
         self.rect = self.image.get_rect()
@@ -114,7 +115,10 @@ class UFO(pg.sprite.Sprite):
         self.y = float(y)
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
-        self.vel = vel
+        if self.direction == 0:
+            self.vel = vel
+        else:
+            self.vel = -vel
         self.bullet = bpic
         self.bulletvel = bspd
         self.maxtick = shootdelay
