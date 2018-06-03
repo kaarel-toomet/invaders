@@ -41,6 +41,7 @@ u3tick = 0
 u3max = 900
 u4tick = 0
 u4max = 1200
+predo = True
 do = True
 spd = 6
 left = True
@@ -52,6 +53,8 @@ health = 1000
 font = pg.font.SysFont("Times", 24)
 dfont = pg.font.SysFont("Times", 32)
 pfont = pg.font.SysFont("Times", 50)
+mfont = pg.font.SysFont("Times",50)
+wfont = pg.font.SysFont("Times",100)
 pause = False
 gameover = False
 gf = False
@@ -66,6 +69,8 @@ atick = 0
 amax = 60
 ammo = 0
 hexp = 0
+mode = 0
+won = False
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
@@ -151,6 +156,26 @@ def reset():
     points = 0
 kausy = Player(screenw/2,screenh-96)
 player = pg.sprite.GroupSingle(kausy)
+while predo:
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            predo = False
+            do = False
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_i:
+                mode = 0
+                predo = False
+            if event.key == pg.K_f:
+                mode = 1
+                predo  = False
+    screen.fill((128,128,128))
+    options = "press I for infinite mode. Press F for finite mode"
+    mtext = mfont.render(options, True, (255,0,255))
+    mtext_rect = mtext.get_rect()
+    mtext_rect.centerx = screenw/2
+    mtext_rect.y = screenh/2
+    screen.blit(mtext,mtext_rect)
+    pg.display.update()
 while do:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -217,6 +242,25 @@ while do:
                 if event.key == pg.K_r:
                     gameover = False
                     reset()
+    if mode == 1 and points >= 500:
+        won = True
+    while won:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                won = False
+                do = False
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_r:
+                    gameover = False
+                    reset()
+        uwon = "YOU WON!"
+        wtext = wfont.render(uwon, True, (0,255,0))
+        wtext_rect = wtext.get_rect()
+        wtext_rect.centerx = screen.get_rect().centerx
+        wtext_rect.y = screenh/2
+        screen.blit(wtext,wtext_rect)
+        screen.blit(text,text_rect)
+        pg.display.update()
     col1 = pg.sprite.groupcollide(arrows, ufos1, True, True)
     for s in col1.keys():
         if len(col1[s]) > 0:
@@ -241,8 +285,8 @@ while do:
     rcol = pg.sprite.spritecollide(kausy, rays,True)
     if len(rcol) > 0:
         health -= (1000/res)
-    uselesswords = "i like ducks"
-    screen.fill((127,127,127))
+    uselesswords = "i like potatoes"
+    screen.fill((128,128,128))
     score = ("Health: " + str(round(health)) + " Score: " + str(points) +
              " Resistance: " + str(res) + " Arrows: " + str(ammo)+
              " Extra Health Gain: " + str(hexp))
