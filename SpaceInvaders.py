@@ -111,7 +111,7 @@ class Proj(pg.sprite.Sprite):
 uselessvariable = 0
 uselessfont = pg.font.SysFont("Times", uselessvariable)
 class UFO(pg.sprite.Sprite):
-    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw, hp):
+    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw, hp, lvl):
         self.direction = r.randint(0,1)
         pg.sprite.Sprite.__init__(self)
         self.image = img
@@ -130,8 +130,9 @@ class UFO(pg.sprite.Sprite):
         self.tick = r.randint(0,self.maxtick)
         self.piw = piw
         self.hp = hp
+        self.lvl = lvl
     def update(self, harm = False):
-        global points
+        global points, health, res, hexp, ammo
         self.tick += 1
         if self.tick >= self.maxtick:
             self.tick = 0
@@ -145,6 +146,21 @@ class UFO(pg.sprite.Sprite):
             self.hp -=1
         if self.hp <= 0:
             ufos1.remove(self)
+            ufos2.remove(self)
+            ufos3.remove(self)
+            ufos4.remove(self)
+            if self.lvl == 1:
+                points += 1
+            elif self.lvl == 2:
+                points += 2
+                health += 100 + hexp
+            elif self.lvl == 3:
+                points += 3
+                res += 1
+            elif self.lvl == 4:
+                points += 4
+                ammo += 50
+                hexp += 10
 def reset():
     global health, player, arrows, ufos1, kausy, ufos2, ufos3, res, ammo, points
     health = 1000
@@ -269,28 +285,19 @@ while do:
     col1 = pg.sprite.groupcollide(arrows, ufos1, True, False)
     if len(col1.values()) > 0:
         for ufo in col1.values():
-            print(ufo[0])
-            print(type(ufo[0]))
-            points += 1
             ufo[0].update(True)
-            #ufos1.update(True)
-    col2 = pg.sprite.groupcollide(arrows, ufos2, True, True)
-    for s in col2.keys():
-        if len(col2[s]) > 0:
-            points += 2
-            health += 100 + hexp
-    col3 = pg.sprite.groupcollide(arrows, ufos3, True, True)
-    for s in col3.keys():
-        if len(col3[s]) > 0:
-            points += 3
-            res += 1
-    col4 = pg.sprite.groupcollide(arrows, ufos4, True, True)
-    for s in col4.keys():
-        if len(col4[s]) > 0:
-            points += 4
-            ammo += 50
-            hexp += 10
-            #health += hexp
+    col2 = pg.sprite.groupcollide(arrows, ufos2, True, False)
+    if len(col2.values()) > 0:
+        for ufo in col2.values():
+            ufo[0].update(True)
+    col3 = pg.sprite.groupcollide(arrows, ufos3, True, False)
+    if len(col3.values()) > 0:
+        for ufo in col3.values():
+            ufo[0].update(True)
+    col4 = pg.sprite.groupcollide(arrows, ufos4, True, False)
+    if len(col4.values()) > 0:
+        for ufo in col4.values():
+            ufo[0].update(True)
     rcol = pg.sprite.spritecollide(kausy, rays,True)
     if len(rcol) > 0:
         health -= (1000/res)
@@ -329,25 +336,25 @@ while do:
     if u1tick >= u1max:
         u1tick = 0
         ufos1.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo1,
-                      60, ray, 16, 64, 2))
+                      60, ray, 16, 64, 1, 1))
         u1max = r.randint(0,600)
     u2tick += 1
     if u2tick >= u2max:
         u2tick = 0
         ufos2.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 2, ufo2,
-                      30, ray, 16, 48, 2))
+                      30, ray, 16, 48, 2, 2))
         u2max = r.randint(0,1200)
     u3tick += 1
     if u3tick >= u3max:
         u3tick = 0
         ufos3.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo3,
-                      20, ray, 16, 64, 2))
+                      20, ray, 16, 64, 3, 3))
         u3max = r.randint(0,1800)
     u4tick += 1
     if u4tick >= u4max:
         u4tick = 0
         ufos4.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 4, ufo4,
-                      10, ray, 16, 128, 2))
+                      10, ray, 16, 128, 3, 4))
         u4max = r.randint(0,2400)
     atick += 1
     if atick >= amax:
