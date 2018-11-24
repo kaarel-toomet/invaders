@@ -263,7 +263,7 @@ while do:
                 if event.key == pg.K_r:
                     gameover = False
                     reset()
-    if mode == 1 and points >= 256:
+    if mode == 1 and points >= 250:
         won = True
     while won:
         for event in pg.event.get():
@@ -272,7 +272,7 @@ while do:
                 do = False
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_r:
-                    gameover = False
+                    won = False
                     reset()
         uwon = "YOU WON!"
         wtext = wfont.render(uwon, True, (0,255,0))
