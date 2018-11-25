@@ -71,6 +71,11 @@ ammo = 0
 hexp = 0
 mode = 0
 won = False
+per = 255
+peg = 0
+peb = 255
+options = "press I for infinite mode. Press F for finite mode"
+cats = 0
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
@@ -136,7 +141,7 @@ class UFO(pg.sprite.Sprite):
         self.tick += 1
         if self.tick >= self.maxtick:
             self.tick = 0
-            rays.add(Proj(self.x+((self.piw/2)-16),self.y+4,16,ray))
+            rays.add(Proj(self.x+((self.piw/2)-16),self.y+4,screenh/40,ray))
         if self.x + self.vel <= screenw-96 and self.x + self.vel >= 0:
             self.x += self.vel
             self.rect.x = int(self.x)
@@ -189,14 +194,22 @@ while predo:
             if event.key == pg.K_f:
                 mode = 1
                 predo  = False
+            if event.key == pg.K_RSHIFT:
+                #per = 255-per
+                peg = 128-peg
+                peb = 255-peb
+                options += "hi"
+                if cats == 0:
+                    options = "pres i 4 infnit moed pres f 4 finit mod"
+                cats += 1
     screen.fill((128,128,128))
-    options = "press I for infinite mode. Press F for finite mode"
-    mtext = mfont.render(options, True, (255,0,255))
+    mtext = mfont.render(options, True, (per,peg,peb))
     mtext_rect = mtext.get_rect()
     mtext_rect.centerx = screenw/2
     mtext_rect.y = screenh/2
     screen.blit(mtext,mtext_rect)
     pg.display.update()
+dfont = pg.font.SysFont("Times", 50+cats)
 while do:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -215,7 +228,7 @@ while do:
             elif event.key == pg.K_SPACE:
                 if ammo > 0:
                     ammo -= 1
-                    arrows.add(Proj(kausy.getx()+28, screenh-96,-10,arw))
+                    arrows.add(Proj(kausy.getx()+28, screenh-96,-screenh/60,arw))
             elif event.key == pg.K_F7:
                 uselessvariable += 30
         elif event.type == pg.KEYUP:
@@ -240,7 +253,7 @@ while do:
         ptext = dfont.render(pd, True, (0,0,0))
         ptext_rect = ptext.get_rect()
         ptext_rect.centerx = screen.get_rect().centerx
-        ptext_rect.y = 50
+        ptext_rect.y = 50+cats
         screen.blit(ptext,ptext_rect)
         screen.blit(text,text_rect)
         pg.display.update()
