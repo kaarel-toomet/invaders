@@ -209,7 +209,7 @@ while predo:
     mtext_rect.y = screenh/2
     screen.blit(mtext,mtext_rect)
     pg.display.update()
-dfont = pg.font.SysFont("Times", 50+cats)
+pfont = pg.font.SysFont("Times", 50+cats)
 while do:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -250,7 +250,7 @@ while do:
                 if event.key == pg.K_p:
                     pause = False
         pd = "PAUSED"
-        ptext = dfont.render(pd, True, (0,0,0))
+        ptext = pfont.render(pd, True, (0,0,0))
         ptext_rect = ptext.get_rect()
         ptext_rect.centerx = screen.get_rect().centerx
         ptext_rect.y = 50+cats
