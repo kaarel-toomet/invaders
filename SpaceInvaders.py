@@ -43,7 +43,8 @@ u4tick = 0
 u4max = 1200
 predo = True
 do = True
-spd = 6
+hor_speed = screenw/250
+# player horizontal speed if left/right arrow pressed
 left = True
 right = True
 mleft = False
@@ -93,9 +94,9 @@ class Player(pg.sprite.Sprite):
         else:
             right = True
         if mleft and left:
-            self.rect.x -= spd
+            self.rect.x -= hor_speed
         if mright and right:
-            self.rect.x += spd
+            self.rect.x += hor_speed
         self.rect.y = screenh-96
     def getx(self):
         return self.rect.x
