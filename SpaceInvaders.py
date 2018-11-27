@@ -144,7 +144,7 @@ class UFO(pg.sprite.Sprite):
         if self.tick >= self.maxtick:
             self.tick = 0
             rays.add(Proj(self.x+((self.piw/2)-16),self.y+4,screenh/40,ray))
-        if self.x + self.vel <= screenw-96 and self.x + self.vel >= 0:
+        if self.x + (self.vel*level) <= screenw-96 and self.x + (self.vel*level) >= 0:
             self.x += self.vel*level
             self.rect.x = int(self.x)
         else:
