@@ -77,6 +77,7 @@ peg = 0
 peb = 255
 options = "press I for infinite mode. Press F for finite mode"
 cats = 0
+level = 1
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
@@ -138,13 +139,13 @@ class UFO(pg.sprite.Sprite):
         self.hp = hp
         self.lvl = lvl
     def update(self, harm = False):
-        global points, health, res, hexp, ammo
+        global points, health, res, hexp, ammo, level
         self.tick += 1
         if self.tick >= self.maxtick:
             self.tick = 0
             rays.add(Proj(self.x+((self.piw/2)-16),self.y+4,screenh/40,ray))
         if self.x + self.vel <= screenw-96 and self.x + self.vel >= 0:
-            self.x += self.vel
+            self.x += self.vel*level
             self.rect.x = int(self.x)
         else:
             self.vel = -self.vel
@@ -319,7 +320,7 @@ while do:
     screen.fill((128,128,128))
     score = ("Health: " + str(round(health)) + " Score: " + str(points) +
              " Resistance: " + str(res) + " Arrows: " + str(ammo)+
-             " Extra Health Gain: " + str(hexp))
+             " Extra Health Gain: " + str(hexp) + " Level: " + str(level))
     text = font.render(score, True, (255,255,255))
     text_rect = text.get_rect()
     text_rect.centerx = screenw/2
@@ -347,6 +348,7 @@ while do:
     screen.blit(uselesstext,uselesstext_rect)
     pg.display.update()
     u1tick += 1
+    level = int(points/3)
     if u1tick >= u1max:
         u1tick = 0
         ufos1.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo1,
