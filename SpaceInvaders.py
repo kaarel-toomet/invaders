@@ -124,6 +124,8 @@ uselessvariable = 0
 uselessfont = pg.font.SysFont("Times", uselessvariable)
 class UFO(pg.sprite.Sprite):
     def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw, hp, lvl):
+        global level
+        # game level: used to set the speed multiplier
         self.direction = r.randint(0,1)
         pg.sprite.Sprite.__init__(self)
         self.image = img
@@ -133,9 +135,9 @@ class UFO(pg.sprite.Sprite):
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
         if self.direction == 0:
-            self.vel = vel
+            self.vel = vel*level
         else:
-            self.vel = -vel
+            self.vel = -vel*level
         self.bullet = bpic
         self.bulletvel = bspd
         self.maxtick = shootdelay
@@ -144,13 +146,13 @@ class UFO(pg.sprite.Sprite):
         self.hp = hp
         self.lvl = lvl
     def update(self, harm = False):
-        global points, health, res, hexp, ammo, level
+        global points, health, res, hexp, ammo
         self.tick += 1
         if self.tick >= self.maxtick:
             self.tick = 0
             rays.add(Proj(self.x+((self.piw/2)-16),self.y+4,screenh/40,ray))
-        if self.x + (self.vel*level) <= screenw-96 and self.x + (self.vel*level) >= 0:
-            self.x += self.vel*level
+        if self.x + (self.vel) <= screenw-96 and self.x + (self.vel) >= 0:
+            self.x += self.vel
             self.rect.x = int(self.x)
         else:
             self.vel = -self.vel
