@@ -112,9 +112,12 @@ class Proj(pg.sprite.Sprite):
         self.rect.y = int(self.y)
         self.vel = vel
     def update(self):
-        if self.y + self.vel <= screenh+64 and self.rect.y + self.vel >= -64:
+        if self.y <= screenh+64 and self.rect.y >= -64:
             self.y += self.vel
             self.rect.y = int(self.y)
+        else:
+            arrows.remove(self)
+            rays.remove(self)
 uselessvariable = 0
 uselessfont = pg.font.SysFont("Times", uselessvariable)
 class UFO(pg.sprite.Sprite):
@@ -183,7 +186,7 @@ def reset():
     res = 10
     points = 0
 kausy = Player(screenw/2,screenh-96)
-player = pg.sprite.GroupSingle(kausy)
+player = pg.sprite.Group(kausy)
 while predo:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -202,7 +205,7 @@ while predo:
                 peb = 255-peb
                 options += "hi"
                 if cats == 0:
-                    options = "pres i 4 infnit moed pres f 4 finit mod"
+                    options = "press i for infnite moderp press f for finite mode,,,,,"
                 cats += 1
     screen.fill((128,128,128))
     mtext = mfont.render(options, True, (per,peg,peb))
