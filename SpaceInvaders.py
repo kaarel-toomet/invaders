@@ -3,8 +3,10 @@ import pygame as pg
 import random as r
 import sys
 import subprocess
+import os
 
 pg.init()
+
 pic = pg.image.load("kausyarcher.png")
 arw = pg.image.load("arrow.png")
 ufo1 = pg.image.load("invader1.png")
@@ -383,5 +385,4 @@ while do:
         uselessvariable -= 1
     if not gf:
         timer.tick(60)
-
-pg.quit()
+os._exit(0)                        ##because pg.quit() doesnt work
