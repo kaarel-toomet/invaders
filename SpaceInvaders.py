@@ -69,7 +69,7 @@ ufos3 = pg.sprite.Group()
 ufos4 = pg.sprite.Group()
 rays = pg.sprite.Group()
 atick = 0
-amax = 60
+amax = 40
 ammo = 0
 hexp = 0
 mode = 0
@@ -173,7 +173,7 @@ class UFO(pg.sprite.Sprite):
                 res += 1
             elif self.lvl == 4:
                 points += 4
-                ammo += 50
+                ammo += 60
                 hexp += 10
 def reset():
     global health, player, arrows, ufos1, kausy, ufos2, ufos3, res, ammo, points
