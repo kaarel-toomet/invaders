@@ -7,13 +7,6 @@ import os
 
 pg.init()
 
-pic = pg.image.load("kausyarcher.png")
-arw = pg.image.load("arrow.png")
-ufo1 = pg.image.load("invader1.png")
-ufo2 = pg.image.load("invader2.png")
-ufo3 = pg.image.load("invader3.png")
-ufo4 = pg.image.load("invader4.png")
-
 ## figure out the screen size
 ## The standard get_size() gives wrong results on multi-monitor setup
 ## use xrandr instead (only on linux)
@@ -34,8 +27,28 @@ if not xdotool:
 pg.display.set_caption("Space Invaders")
 
 ## load the images and scale into righ-size blocks
-fv = round(screenh/35)
-ray = pg.transform.scale(pg.image.load("ray.png"), (fv,fv))
+f = round(screenh/12)
+kausy = pg.transform.scale(pg.image.load("kausyarcher.png"), (f,f))
+f = round(screenh/35)
+ray = pg.transform.scale(pg.image.load("ray.png"), (f,f))
+fy = round(screenh/30)
+fx = round(fy/3)
+arw = pg.transform.scale(pg.image.load("arrow.png"), (fx,fy))
+f = round(screenh/12)
+ufo1 = pg.transform.scale(pg.image.load("invader1.png"), (f,f))
+# blue ufo
+fy = round(screenh/45)
+fx = round(screenh/45*3.5)
+ufo2 = pg.transform.scale(pg.image.load("invader2.png"), (fx,fy))
+# green ufo
+fy = round(screenh/40)
+fx = 2*fy
+ufo3 = pg.transform.scale(pg.image.load("invader3.png"), (fx,fy))
+# yellow ufo
+fy = round(screenh/40)
+fx = 8*fy
+ufo4 = pg.transform.scale(pg.image.load("invader4.png"), (f,f))
+# light blue ufo
 
 points = 0
 u1tick = 0
@@ -86,7 +99,7 @@ level = 1
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
-        self.image = pic
+        self.image = kausy
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
