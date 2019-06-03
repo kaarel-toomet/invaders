@@ -13,7 +13,6 @@ ufo1 = pg.image.load("invader1.png")
 ufo2 = pg.image.load("invader2.png")
 ufo3 = pg.image.load("invader3.png")
 ufo4 = pg.image.load("invader4.png")
-ray = pg.image.load("ray.png")
 
 ## figure out the screen size
 ## The standard get_size() gives wrong results on multi-monitor setup
@@ -33,6 +32,10 @@ if not xdotool:
     screen = pg.display.set_mode((0,0), pg.RESIZABLE)
     screenw, screenh = pg.display.get_surface().get_size()
 pg.display.set_caption("Space Invaders")
+
+## load the images and scale into righ-size blocks
+fv = round(screenh/35)
+ray = pg.transform.scale(pg.image.load("ray.png"), (fv,fv))
 
 points = 0
 u1tick = 0
