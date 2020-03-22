@@ -11,6 +11,7 @@ ufo1 = pg.image.load("invader1.png")
 ufo2 = pg.image.load("invader2.png")
 ufo3 = pg.image.load("invader3.png")
 ufo4 = pg.image.load("invader4.png")
+ufo5 = pg.image.load("invader5.png")
 ray = pg.image.load("ray.png")
 
 ## figure out the screen size
@@ -41,6 +42,8 @@ u3tick = 0
 u3max = 900
 u4tick = 0
 u4max = 1200
+u5tick = 0
+u5max = 10000
 predo = True
 do = True
 hor_speed = screenw/250
@@ -50,6 +53,7 @@ right = True
 mleft = False
 mright = False
 timer = pg.time.Clock()
+pexp = 0
 health = 1000
 font = pg.font.SysFont("Times", 24)
 dfont = pg.font.SysFont("Times", 32)
@@ -65,6 +69,7 @@ ufos1 = pg.sprite.Group()
 ufos2 = pg.sprite.Group()
 ufos3 = pg.sprite.Group()
 ufos4 = pg.sprite.Group()
+ufos5 = pg.sprite.Group()
 rays = pg.sprite.Group()
 atick = 0
 amax = 60
@@ -117,7 +122,7 @@ class Proj(pg.sprite.Sprite):
 uselessvariable = 0
 uselessfont = pg.font.SysFont("Times", uselessvariable)
 class UFO(pg.sprite.Sprite):
-    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw, hp, lvl):
+    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw, hp, lvl, target = False):
         self.direction = r.randint(0,1)
         pg.sprite.Sprite.__init__(self)
         self.image = img
@@ -130,6 +135,8 @@ class UFO(pg.sprite.Sprite):
             self.vel = vel
         else:
             self.vel = -vel
+        if target:
+            self.vel = vel
         self.bullet = bpic
         self.bulletvel = bspd
         self.maxtick = shootdelay
@@ -137,38 +144,51 @@ class UFO(pg.sprite.Sprite):
         self.piw = piw
         self.hp = hp
         self.lvl = lvl
+        self.target = target
     def update(self, harm = False):
-        global points, health, res, hexp, ammo
+        global points, health, res, hexp, ammo, pexp
         self.tick += 1
         if self.tick >= self.maxtick:
             self.tick = 0
             rays.add(Proj(self.x+((self.piw/2)-16),self.y+4,screenh/40,ray))
-        if self.x + self.vel <= screenw-96 and self.x + self.vel >= 0:
-            self.x += self.vel
-            self.rect.x = int(self.x)
+        if not self.target:
+            if self.x + self.vel <= screenw-96 and self.x + self.vel >= 0:
+                self.x += self.vel
+            else:
+                self.vel = -self.vel
         else:
-            self.vel = -self.vel
+            if kausy.getx() <= self.rect.x:
+                self.x -= self.vel
+            else:
+                self.x += self.vel
+        self.rect.x = int(self.x)
         if harm:
-            self.hp -=1
+            self.hp -= 1
         if self.hp <= 0:
             ufos1.remove(self)
             ufos2.remove(self)
             ufos3.remove(self)
             ufos4.remove(self)
+            ufos5.remove(self)
+            pgain = (10+pexp)/10
             if self.lvl == 1:
-                points += 1
+                points += int(pgain)
             elif self.lvl == 2:
-                points += 2
+                points += int(2*pgain)
                 health += 100 + hexp
             elif self.lvl == 3:
-                points += 3
+                points += int(3*pgain)
                 res += 1
             elif self.lvl == 4:
-                points += 4
+                points += int(4*pgain)
                 ammo += 50
                 hexp += 10
+            elif self.lvl == 5:
+                points += int(5*pgain)
+                pexp += 1
 def reset():
-    global health, player, arrows, ufos1, kausy, ufos2, ufos3, res, ammo, points
+    global health, player, arrows, ufos1, kausy
+    global ufos2, ufos3, res, ammo, points, ufos4, ufos5
     health = 1000
     player.empty()
     arrows.empty()
@@ -176,11 +196,13 @@ def reset():
     ufos2.empty()
     ufos3.empty()
     ufos4.empty()
+    ufos5.empty()
     ammo = 0
     kausy = Player(screenw/2,screenh-96)
     player = pg.sprite.GroupSingle(kausy)
     res = 10
     points = 0
+    pexp = 0
 kausy = Player(screenw/2,screenh-96)
 player = pg.sprite.GroupSingle(kausy)
 while predo:
@@ -312,6 +334,10 @@ while do:
     if len(col4.values()) > 0:
         for ufo in col4.values():
             ufo[0].update(True)
+    col5 = pg.sprite.groupcollide(arrows, ufos5, True, False)
+    if len(col5.values()) > 0:
+        for ufo in col5.values():
+            ufo[0].update(True)
     rcol = pg.sprite.spritecollide(kausy, rays,True)
     if len(rcol) > 0:
         health -= (1000/res)
@@ -319,7 +345,7 @@ while do:
     screen.fill((128,128,128))
     score = ("Health: " + str(round(health)) + " Score: " + str(points) +
              " Resistance: " + str(res) + " Arrows: " + str(ammo)+
-             " Extra Health Gain: " + str(hexp))
+             " Extra Health Gain: " + str(hexp) + " Score Bonus: " + str(pexp))
     text = font.render(score, True, (255,255,255))
     text_rect = text.get_rect()
     text_rect.centerx = screenw/2
@@ -339,6 +365,8 @@ while do:
     ufos3.draw(screen)
     ufos4.update()
     ufos4.draw(screen)
+    ufos5.update()
+    ufos5.draw(screen)
     uselessfont = pg.font.SysFont("Times", uselessvariable)
     uselesstext = uselessfont.render(uselesswords, True, (0,0,255))
     uselesstext_rect = uselesstext.get_rect()
@@ -368,8 +396,14 @@ while do:
     if u4tick >= u4max:
         u4tick = 0
         ufos4.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 4, ufo4,
-                      10, ray, 16, 128, 3, 4))
+                      10, ray, 16, 128, 4, 4))
         u4max = r.randint(0,2400)
+    u5tick += 1
+    if u5tick >= u5max:
+        u5tick = 0
+        ufos5.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 3, ufo5,
+                      10, ray, 32, 64, 5, 5, True))
+        u5max = r.randint(0,3000)
     atick += 1
     if atick >= amax:
         atick = 0
