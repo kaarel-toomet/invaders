@@ -4,6 +4,7 @@ import random as r
 import sys
 import subprocess
 import os
+import numpy as np
 
 pg.init()
 
@@ -84,7 +85,7 @@ peg = 0
 peb = 255
 options = "press I for infinite mode. Press F for finite mode"
 cats = 0
-level = 1
+level = 0
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
@@ -169,6 +170,8 @@ class UFO(pg.sprite.Sprite):
                 self.x -= self.vel
             else:
                 self.x += self.vel
+            if np.abs(self.x-kausy.getx()) <= self.vel:
+                self.x = kausy.getx()
         self.rect.x = int(self.x)
         if harm:
             self.hp -= 1
@@ -189,7 +192,7 @@ class UFO(pg.sprite.Sprite):
                 res += 1
             elif self.lvl == 4:
                 points += int(4*pgain)
-                ammo += 50
+                ammo += 60
                 hexp += 10
             elif self.lvl == 5:
                 points += int(5*pgain)
