@@ -128,7 +128,7 @@ class Proj(pg.sprite.Sprite):
 uselessvariable = 0
 uselessfont = pg.font.SysFont("Times", uselessvariable)
 class UFO(pg.sprite.Sprite):
-    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw, hp, lvl, target = False
+    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw, hp, lvl, target = False):
         global level
         # game level: used to set the speed multiplier
         self.direction = r.randint(0,1)
