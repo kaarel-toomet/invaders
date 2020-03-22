@@ -3,8 +3,10 @@ import pygame as pg
 import random as r
 import sys
 import subprocess
+import os
 
 pg.init()
+
 pic = pg.image.load("kausyarcher.png")
 arw = pg.image.load("arrow.png")
 ufo1 = pg.image.load("invader1.png")
@@ -72,7 +74,7 @@ ufos4 = pg.sprite.Group()
 ufos5 = pg.sprite.Group()
 rays = pg.sprite.Group()
 atick = 0
-amax = 60
+amax = 40
 ammo = 0
 hexp = 0
 mode = 0
@@ -82,6 +84,7 @@ peg = 0
 peb = 255
 options = "press I for infinite mode. Press F for finite mode"
 cats = 0
+level = 1
 class Player(pg.sprite.Sprite):
     def __init__(self,x,y):
         pg.sprite.Sprite.__init__(self)
@@ -116,13 +119,18 @@ class Proj(pg.sprite.Sprite):
         self.rect.y = int(self.y)
         self.vel = vel
     def update(self):
-        if self.y + self.vel <= screenh+64 and self.rect.y + self.vel >= -64:
+        if self.y <= screenh+64 and self.rect.y >= -64:
             self.y += self.vel
             self.rect.y = int(self.y)
+        else:
+            arrows.remove(self)
+            rays.remove(self)
 uselessvariable = 0
 uselessfont = pg.font.SysFont("Times", uselessvariable)
 class UFO(pg.sprite.Sprite):
-    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw, hp, lvl, target = False):
+    def __init__(self, x, y, vel, img, shootdelay, bpic, bspd, piw, hp, lvl, target = False
+        global level
+        # game level: used to set the speed multiplier
         self.direction = r.randint(0,1)
         pg.sprite.Sprite.__init__(self)
         self.image = img
@@ -132,11 +140,11 @@ class UFO(pg.sprite.Sprite):
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
         if self.direction == 0:
-            self.vel = vel
+            self.vel = vel*level
         else:
-            self.vel = -vel
+            self.vel = -vel*level
         if target:
-            self.vel = vel
+            self.vel = vel*level
         self.bullet = bpic
         self.bulletvel = bspd
         self.maxtick = shootdelay
@@ -204,7 +212,7 @@ def reset():
     points = 0
     pexp = 0
 kausy = Player(screenw/2,screenh-96)
-player = pg.sprite.GroupSingle(kausy)
+player = pg.sprite.Group(kausy)
 while predo:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -223,7 +231,7 @@ while predo:
                 peb = 255-peb
                 options += "hi"
                 if cats == 0:
-                    options = "pres i 4 infnit moed pres f 4 finit mod"
+                    options = "press i for infnite moderp press f for finite mode,,,,,"
                 cats += 1
     screen.fill((128,128,128))
     mtext = mfont.render(options, True, (per,peg,peb))
@@ -345,7 +353,8 @@ while do:
     screen.fill((128,128,128))
     score = ("Health: " + str(round(health)) + " Score: " + str(points) +
              " Resistance: " + str(res) + " Arrows: " + str(ammo)+
-             " Extra Health Gain: " + str(hexp) + " Score Bonus: " + str(pexp))
+             " Extra Health Gain: " + str(hexp) +
+             " Score Bonus: " + str(pexp) + " Level: " + str(level))
     text = font.render(score, True, (255,255,255))
     text_rect = text.get_rect()
     text_rect.centerx = screenw/2
@@ -375,6 +384,7 @@ while do:
     screen.blit(uselesstext,uselesstext_rect)
     pg.display.update()
     u1tick += 1
+    level = int(points/3)
     if u1tick >= u1max:
         u1tick = 0
         ufos1.add(UFO(r.randint(0,screenw-96),r.randint(0, 256), 1, ufo1,
@@ -412,5 +422,4 @@ while do:
         uselessvariable -= 1
     if not gf:
         timer.tick(60)
-
-pg.quit()
+os._exit(0)                        ##because pg.quit() doesnt work
